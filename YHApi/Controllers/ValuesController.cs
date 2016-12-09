@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Service.IService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,6 +12,11 @@ namespace YHApi.Controllers
     public class ValuesController : ApiController
     {
         // GET api/values
+        private IUserManager um;
+        public ValuesController(IUserManager uManager)
+        {
+            um = uManager;
+        }
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
@@ -18,7 +25,9 @@ namespace YHApi.Controllers
         // GET api/values/5
         public string Get(int id)
         {
-            return "value";
+            var user = um.LoadAll(x=>x.ID>0);
+            return JsonConvert.SerializeObject(user);
+            
         }
 
         // POST api/values

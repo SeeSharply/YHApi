@@ -6,6 +6,8 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Web.SessionState;
+using YHApi.Infrastructure;
 
 namespace YHApi
 {
@@ -18,6 +20,14 @@ namespace YHApi
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            var dependencyResolver = new NinjectApiDependencyResolver();
+            GlobalConfiguration.Configuration.DependencyResolver = dependencyResolver;
+
+        }
+        public override void Init()
+        {
+            this.PostAuthenticateRequest += (sender, e) => HttpContext.Current.SetSessionStateBehavior(SessionStateBehavior.Required);
+            base.Init();
         }
     }
 }
